@@ -33,6 +33,16 @@ export interface GitHubIssue {
   labels: string[];
 }
 
+/** Who closed an issue, which GitHub only reports on the single-issue endpoint. */
+export interface IssueClosure {
+  reporter: string | null;
+  closer: string | null;
+  closerIsBot: boolean;
+}
+
+/** Automation is not always typed as a Bot account, as in `nextjs-bot`. */
+const BOT_LOGIN = /(?:^|[-_[])bot(?:\]|$)/i;
+
 export interface ClosedIssueSample {
   /** Closed issues with this outcome on GitHub, not just those returned. */
   total: number;
@@ -136,6 +146,24 @@ export class GitHubClient {
       items: RawIssue[];
     }>(`/search/issues?${params}`);
     return { total: result.total_count, issues: result.items.map(toIssue) };
+  }
+
+  async getIssueClosure(
+    repo: string,
+    issueNumber: number,
+  ): Promise<IssueClosure> {
+    const issue = await this.request<{
+      user: { login: string } | null;
+      closed_by: { login: string; type: string } | null;
+    }>(`/repos/${repo}/issues/${issueNumber}`);
+    const closer = issue.closed_by;
+    return {
+      reporter: issue.user?.login ?? null,
+      closer: closer?.login ?? null,
+      closerIsBot:
+        closer !== null &&
+        (closer.type === "Bot" || BOT_LOGIN.test(closer.login)),
+    };
   }
 
   async listOpenIssues(repo: string, limit: number): Promise<GitHubIssue[]> {

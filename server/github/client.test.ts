@@ -47,6 +47,21 @@ describe("GitHubClient", () => {
     });
   });
 
+  it.each([
+    [{ login: "github-actions[bot]", type: "Bot" }, true],
+    [{ login: "nextjs-bot", type: "User" }, true],
+    [{ login: "abbot", type: "User" }, false],
+    [{ login: "robotics-fan", type: "User" }, false],
+  ])("detects automation in closer %j", async (closedBy, closerIsBot) => {
+    const fetch = respondWith({ user: { login: "r" }, closed_by: closedBy });
+    const closure = await new GitHubClient({ fetch }).getIssueClosure("o/r", 7);
+    expect(closure).toEqual({
+      reporter: "r",
+      closer: closedBy.login,
+      closerIsBot,
+    });
+  });
+
   it("excludes pull requests from open issues", async () => {
     const fetch = respondWith([
       rawIssue,

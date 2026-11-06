@@ -23,6 +23,11 @@ import {
 import { getDb, schema } from "../db/index.js";
 import type { GitHubClient, GitHubIssue } from "../github/client.js";
 import {
+  caseWeight,
+  estimatedDecisions,
+  sampleProjectDecisions,
+} from "./exam-sampling.js";
+import {
   parseStringList,
   recordExamImport,
   type ProbationRow,
@@ -66,45 +71,62 @@ function historyCase(
   };
 }
 
+/** GitHub search returns at most this many candidates in one page. */
+const MAX_CANDIDATES_PER_OUTCOME = 100;
+
+async function sampleOutcome(
+  repo: string,
+  github: GitHubClient,
+  outcome: Disposition,
+  target: number,
+) {
+  const { total, issues } = await github.sampleClosedIssues(
+    repo,
+    outcome,
+    MAX_CANDIDATES_PER_OUTCOME,
+  );
+  const sample = await sampleProjectDecisions(issues, target, (issue) =>
+    github.getIssueClosure(repo, issue.number),
+  );
+  return { outcome, total, sample };
+}
+
 /**
- * Samples each maintainer outcome evenly so rare ones can be examined at all,
- * then weights every case so aggregates still reflect the repository's real mix.
+ * Samples each outcome evenly so rare ones can be examined at all, keeps only
+ * real project decisions, then weights every case to restore the real mix.
  */
 export async function importExam(
   probation: ProbationRow,
   github: GitHubClient,
   questionsPerOutcome: number,
 ) {
-  const [labels, ...samples] = await Promise.all([
+  const [labels, ...sampled] = await Promise.all([
     github.listLabels(probation.examRepo),
     ...DISPOSITIONS.map((outcome) =>
-      github.sampleClosedIssues(
-        probation.examRepo,
-        outcome,
-        questionsPerOutcome,
-      ),
+      sampleOutcome(probation.examRepo, github, outcome, questionsPerOutcome),
     ),
   ]);
 
   const populations = Object.fromEntries(
-    DISPOSITIONS.map((outcome, i) => [outcome, samples[i]!.total]),
+    sampled.map(({ outcome, total, sample }) => [
+      outcome,
+      estimatedDecisions(total, sample),
+    ]),
   ) as Record<Disposition, number>;
 
   const now = new Date().toISOString();
-  const rows = DISPOSITIONS.flatMap((outcome, i) => {
-    const { total, issues } = samples[i]!;
-    const humanIssues = issues.filter((issue) => !issue.authorIsBot);
-    const weight = humanIssues.length > 0 ? total / humanIssues.length : 0;
-    return humanIssues.map((issue) =>
+  const rows = sampled.flatMap(({ outcome, total, sample }) => {
+    const weight = caseWeight(total, sample.examined);
+    return sample.kept.map((issue) =>
       historyCase(probation.id, issue, outcome, weight, now),
     );
   });
 
   if (rows.length === 0) {
-    fail("This repository has no closed issues to build an exam from.", {
-      errorCode: "no_history",
-      statusCode: 422,
-    });
+    fail(
+      "None of this repository's recent closed issues were closed by someone other than a bot or their reporter, so there is nothing to examine.",
+      { errorCode: "no_history", statusCode: 422 },
+    );
   }
 
   const inserted = await getDb()
@@ -133,7 +155,8 @@ async function examCounts(probationId: string) {
 }
 
 /**
- * Hands out only what existed when each issue opened. Issue text is attacker
+ * Hands out the issue's current title and body only: no labels, comments or
+ * outcome. Text edited after opening cannot be told apart. Issue text is attacker
  * controlled, hence the `untrusted` field names. Random ids order the questions,
  * so outcomes arrive shuffled rather than grouped by stratum.
  */
@@ -230,7 +253,12 @@ export async function submitExamAnswers(
   return { accepted, ...(await examCounts(probation.id)) };
 }
 
-/** Answer keys stay closed to agents until no question is left to answer. */
+/**
+ * Answer keys stay closed to agents until no question is left to answer. This
+ * blocks the agent surfaces. The UI label is a plain header, so someone holding
+ * their own credentials could read their own results early over HTTP; agents
+ * have no way to send it, having no HTTP tool.
+ */
 export async function getExamResults(
   probation: ProbationRow,
   { callerIsHuman, limit }: { callerIsHuman: boolean; limit: number },

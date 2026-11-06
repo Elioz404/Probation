@@ -7,12 +7,14 @@ import { importExam } from "../server/services/exam.js";
 import { loadProbation } from "../server/services/probations.js";
 import { probationIdSchema } from "../shared/contracts.js";
 
-const DEFAULT_QUESTIONS_PER_OUTCOME = 40;
+const DEFAULT_QUESTIONS_PER_OUTCOME = 25;
 const MAX_QUESTIONS_PER_OUTCOME = 100;
 
 export default defineAction({
   description:
-    "Build the exam from the repository's closed issues. Each one's real outcome becomes the answer key, which the examinee never sees. Safe to run again: known issues are skipped.",
+    "Build the exam from the repository's closed issues. Only issues closed by a person other than the reporter count. Each real outcome becomes the answer key, which the examinee never sees. Safe to run again: known issues are skipped.",
+  // An external agent brings its own web tools, so it could not sit a blind exam.
+  mcpTool: false,
   schema: z.object({
     probationId: probationIdSchema,
     questionsPerOutcome: z.coerce
@@ -22,7 +24,7 @@ export default defineAction({
       .max(MAX_QUESTIONS_PER_OUTCOME)
       .default(DEFAULT_QUESTIONS_PER_OUTCOME)
       .describe(
-        `Issues to sample per maintainer outcome (completed, duplicate, not planned); defaults to ${DEFAULT_QUESTIONS_PER_OUTCOME}.`,
+        `Project decisions to sample per outcome (completed, duplicate, not planned); defaults to ${DEFAULT_QUESTIONS_PER_OUTCOME}.`,
       ),
   }),
   outputSchema: z.object({
