@@ -19,7 +19,7 @@ registerRequiredSecret({
   key: USER_TOKEN_KEY,
   label: "GitHub token",
   description:
-    "Fine-grained token limited to your work repository, with Issues read and write. Needed for the agent's first day of work; exams on public repositories run without it.",
+    "Fine-grained token limited to your work repository, with Issues read and write. Lets the agent act on that repository, and gives exams on public repositories enough GitHub API reads.",
   docsUrl: "https://github.com/settings/personal-access-tokens/new",
   scope: "user",
   kind: "api-key",
