@@ -23,8 +23,10 @@ export const probations = pgTable("probations", {
   policy: text("policy").notNull(),
   /** JSON `Record<Disposition, number>`: closed issues per outcome on GitHub. */
   populations: text("populations"),
-  /** JSON string[]: the repository's label vocabulary, given to the examinee. */
+  /** JSON string[]: the exam repository's labels, given to the examinee. */
   labelCatalog: text("label_catalog").notNull().default("[]"),
+  /** JSON string[]: the work repository's labels, refreshed on every sync. */
+  workLabelCatalog: text("work_label_catalog").notNull().default("[]"),
   /** Label that marks an accepted issue on the work repository. */
   triagedLabel: text("triaged_label").notNull(),
   createdAt: text("created_at").notNull(),

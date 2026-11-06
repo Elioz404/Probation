@@ -35,7 +35,7 @@ function PromotionRequest({
   }
 
   return (
-    <li className="grid gap-3 py-4 md:grid-cols-[minmax(0,1fr)_auto] md:items-start">
+    <li className="grid gap-3 py-4 @2xl:grid-cols-[minmax(0,1fr)_auto] @2xl:items-start">
       <div className="min-w-0">
         <h3 className="text-sm font-semibold">
           {labels.action(promotion.action)} ·{" "}

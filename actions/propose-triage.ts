@@ -19,7 +19,9 @@ export default defineAction({
     labels: z
       .array(z.string().max(100))
       .max(10)
-      .describe("Labels to apply, from the catalog. Empty when none fit."),
+      .describe(
+        "Labels to apply, from labelCatalog in read-work-issue. Unknown labels are refused. Empty when none fit.",
+      ),
     confidence: z.number().min(0).max(1).describe("From 0 to 1."),
     rationale: z
       .string()

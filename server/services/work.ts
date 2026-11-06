@@ -5,6 +5,7 @@ import { defineMachine } from "@agent-native/core/state-machine";
 import { and, desc, eq, inArray } from "drizzle-orm";
 
 import type { WorkItemView } from "../../shared/contracts.js";
+import { matchLabels } from "../../shared/github/labels.js";
 import { classifyIssueContext } from "../../shared/trust/context.js";
 import {
   actorSchema,
@@ -23,7 +24,7 @@ import { clipIssueBody } from "./exam.js";
 import { parseStringList, policyOf, type ProbationRow } from "./probations.js";
 import { demoteCell, grantedLevelOf, loadCell } from "./trust-map.js";
 
-const { examCases, workItems } = schema;
+const { examCases, probations, workItems } = schema;
 
 export const workMachine = defineMachine({
   id: "work-item",
@@ -137,7 +138,14 @@ export async function syncWorkIssues(
   github: GitHubClient,
 ) {
   const repo = requireWorkRepo(probation);
-  const issues = await github.listOpenIssues(repo, ISSUES_PER_SYNC);
+  const [issues, labels] = await Promise.all([
+    github.listOpenIssues(repo, ISSUES_PER_SYNC),
+    github.listLabels(repo),
+  ]);
+  await getDb()
+    .update(probations)
+    .set({ workLabelCatalog: JSON.stringify(labels) })
+    .where(eq(probations.id, probation.id));
   if (issues.length === 0) return { added: 0 };
   const now = new Date().toISOString();
   const inserted = await getDb()
@@ -184,15 +192,19 @@ async function loadItem(
   return item;
 }
 
-/** The issue text an agent reads to form a proposal. It is untrusted input. */
+/**
+ * What an agent reads to form a proposal: the issue, which is untrusted input,
+ * and the labels this repository actually has.
+ */
 export async function readWorkItemIssue(
-  probationId: string,
+  probation: ProbationRow,
   workItemId: string,
 ) {
-  const item = await loadItem(probationId, workItemId);
+  const item = await loadItem(probation.id, workItemId);
   return {
     id: item.id,
     context: issueContextSchema.parse(item.context),
+    labelCatalog: parseStringList(probation.workLabelCatalog),
     untrustedIssueTitle: item.title,
     untrustedIssueBody: item.body,
   };
@@ -211,12 +223,22 @@ export async function proposeTriage(
   input: ProposalInput,
 ) {
   const { workItemId, disposition, labels, confidence, rationale } = input;
+  const { known, unknown } = matchLabels(
+    labels,
+    parseStringList(probation.workLabelCatalog),
+  );
+  if (unknown.length > 0) {
+    fail(
+      `This repository has no label named: ${unknown.join(", ")}. Use labelCatalog from read-work-issue.`,
+      { errorCode: "unknown_label", statusCode: 422 },
+    );
+  }
   const updated = await getDb()
     .update(workItems)
     .set({
       status: workMachine.transition("new", "propose"),
       proposedDisposition: disposition,
-      proposedLabels: JSON.stringify(labels),
+      proposedLabels: JSON.stringify(known),
       proposedConfidence: confidence,
       proposedRationale: rationale,
       updatedAt: new Date().toISOString(),

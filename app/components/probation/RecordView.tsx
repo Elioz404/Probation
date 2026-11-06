@@ -26,7 +26,7 @@ function ResultRow({
   return (
     <li
       className={cn(
-        "grid gap-1 py-3 md:grid-cols-[minmax(0,1fr)_auto] md:items-start",
+        "grid gap-1 py-3 @md:grid-cols-[minmax(0,1fr)_auto] @md:items-start",
         result.contested && "opacity-50",
       )}
     >

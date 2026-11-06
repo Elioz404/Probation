@@ -48,7 +48,7 @@ export function CellInspector({
   return (
     <section
       aria-label={t("probation.cell.title")}
-      className="grid gap-4 border-t border-border pt-4 md:grid-cols-2"
+      className="grid gap-4 border-t border-border pt-4 @2xl:grid-cols-2"
     >
       <div>
         <h2 className="text-sm font-semibold">

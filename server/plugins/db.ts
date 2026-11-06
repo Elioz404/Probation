@@ -133,6 +133,11 @@ export default runMigrations(
         CREATE INDEX IF NOT EXISTS work_items_probation_status_idx ON work_items (probation_id, status);
       `,
     },
+    {
+      version: 5,
+      name: "add-work-label-catalog",
+      sql: `ALTER TABLE probations ADD COLUMN IF NOT EXISTS work_label_catalog TEXT NOT NULL DEFAULT '[]';`,
+    },
   ],
   { table: "probation_migrations" },
 );
