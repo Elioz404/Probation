@@ -12,6 +12,7 @@ import {
 export default defineAction({
   description:
     "Ask a person for more autonomy on one trust-map cell. Refused unless the evidence already supports the level; the person signs or declines in the app.",
+  mcpTool: true,
   schema: z.object({
     probationId: probationIdSchema,
     action: triageActionSchema,

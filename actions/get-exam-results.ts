@@ -10,7 +10,9 @@ const MAX_LIMIT = 500;
 
 export default defineAction({
   description:
-    "Read graded answers next to what maintainers actually did. Agents can read this only once the exam has ended.",
+    "Read graded answers next to how each issue was really closed. Agents can read this only once the exam has ended.",
+  // An external agent brings its own web tools, so it could not sit a blind exam.
+  mcpTool: false,
   schema: z.object({
     probationId: probationIdSchema,
     limit: z.coerce

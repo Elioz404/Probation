@@ -8,6 +8,7 @@ import { probationIdSchema, trustEventSchema } from "../shared/contracts.js";
 export default defineAction({
   description:
     "Read the record of every promotion, demotion and manual change on this probation, newest first.",
+  mcpTool: true,
   schema: z.object({ probationId: probationIdSchema }),
   outputSchema: z.array(trustEventSchema),
   http: { method: "GET" },

@@ -7,7 +7,7 @@ import { probationIdSchema } from "../shared/contracts.js";
 
 export default defineAction({
   description:
-    "Strike an exam case from the evidence, or restore it, when the maintainers' historical decision was itself wrong. Only a person can do this.",
+    "Strike an exam case from the evidence, or restore it, when the historical decision was itself wrong. Only a person can do this.",
   uiOnly: true,
   schema: z.object({
     probationId: probationIdSchema,

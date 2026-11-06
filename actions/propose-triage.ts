@@ -9,6 +9,7 @@ import { dispositionSchema } from "../shared/trust/model.js";
 export default defineAction({
   description:
     "Record your triage call on a work item. Touches nothing on GitHub. Then call execute-triage: the trust map decides whether it runs, waits for a person, or stays a suggestion.",
+  mcpTool: true,
   schema: z.object({
     probationId: probationIdSchema,
     workItemId: z.string().min(1).max(64),

@@ -11,6 +11,8 @@ const MAX_ANSWERS = 25;
 export default defineAction({
   description:
     "Submit exam answers. Each case can be answered once and is graded in code against the hidden answer key. Returns progress only, never the grades.",
+  // An external agent brings its own web tools, so it could not sit a blind exam.
+  mcpTool: false,
   schema: z.object({
     probationId: probationIdSchema,
     answers: z

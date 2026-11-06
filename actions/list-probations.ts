@@ -6,6 +6,7 @@ import { probationSummarySchema } from "../shared/contracts.js";
 
 export default defineAction({
   description: "List the probations the current user can see, newest first.",
+  mcpTool: true,
   schema: z.object({}),
   outputSchema: z.array(probationSummarySchema),
   http: { method: "GET" },

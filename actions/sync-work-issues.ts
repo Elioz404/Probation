@@ -10,6 +10,7 @@ import { probationIdSchema } from "../shared/contracts.js";
 export default defineAction({
   description:
     "Pull open issues from the work repository into the work queue. Known issues are skipped.",
+  mcpTool: true,
   schema: z.object({ probationId: probationIdSchema }),
   outputSchema: z.object({ added: z.number() }),
   mcpAnnotations: {

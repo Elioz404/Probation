@@ -10,6 +10,7 @@ import {
 export default defineAction({
   description:
     "Read one probation: repositories, exam progress, trust policy, label catalog and the accept-everything baseline.",
+  mcpTool: true,
   schema: z.object({ id: probationIdSchema }),
   outputSchema: probationDetailSchema,
   http: { method: "GET" },

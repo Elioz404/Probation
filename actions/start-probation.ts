@@ -10,6 +10,7 @@ const DEFAULT_TRIAGED_LABEL = "triaged";
 export default defineAction({
   description:
     "Open a probation: an agent examined on one repository's closed issues, optionally working on a second repository afterwards.",
+  mcpTool: true,
   schema: z.object({
     examRepo: repoRefSchema.describe(
       'Repository whose closed issues become the exam: "owner/name" or a GitHub URL. Read only.',

@@ -13,6 +13,7 @@ import { simulatePolicy } from "../shared/trust/simulate.js";
 export default defineAction({
   description:
     "Replay graded history under a candidate trust policy, per 100 issues: solved alone, wrong alone, asked and watched. Changes nothing.",
+  mcpTool: true,
   schema: z.object({
     probationId: probationIdSchema,
     policy: trustPolicySchema.describe(

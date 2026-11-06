@@ -8,6 +8,7 @@ import { probationIdSchema, trustMapSchema } from "../shared/contracts.js";
 export default defineAction({
   description:
     "Read the trust map: for each action and issue context, the level granted, the level the evidence supports and the evidence itself, plus promotion requests and a replay of history under the current policy.",
+  mcpTool: true,
   schema: z.object({ probationId: probationIdSchema }),
   outputSchema: trustMapSchema,
   http: { method: "GET" },

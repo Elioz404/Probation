@@ -3,8 +3,12 @@ import { describe, expect, it } from "vitest";
 import contestExamCase from "../actions/contest-exam-case.js";
 import decidePromotion from "../actions/decide-promotion.js";
 import executeTriage from "../actions/execute-triage.js";
+import getExamQuestions from "../actions/get-exam-questions.js";
+import getExamResults from "../actions/get-exam-results.js";
 import overruleTriage from "../actions/overrule-triage.js";
+import proposeTriage from "../actions/propose-triage.js";
 import setCellLevel from "../actions/set-cell-level.js";
+import submitExamAnswers from "../actions/submit-exam-answers.js";
 import updateTrustPolicy from "../actions/update-trust-policy.js";
 
 /**
@@ -20,6 +24,23 @@ describe("decisions reserved for a person", () => {
     ["contest-exam-case", contestExamCase],
   ])("%s can only be called from the signed-in UI", (_name, action) => {
     expect(action.uiOnly).toBe(true);
+  });
+});
+
+describe("what external agents can reach", () => {
+  it("keeps the exam in-app, where it can be sat blind", () => {
+    for (const action of [
+      getExamQuestions,
+      submitExamAnswers,
+      getExamResults,
+    ]) {
+      expect(action.mcpTool).toBe(false);
+    }
+  });
+
+  it("serves the work queue through the same gate", () => {
+    expect(executeTriage.mcpTool).toBe(true);
+    expect(proposeTriage.mcpTool).toBe(true);
   });
 });
 

@@ -8,6 +8,7 @@ import { probationIdSchema, workItemSchema } from "../shared/contracts.js";
 export default defineAction({
   description:
     "List the work queue with each proposal and the autonomy the current map gives it.",
+  mcpTool: true,
   schema: z.object({ probationId: probationIdSchema }),
   outputSchema: z.array(workItemSchema),
   http: { method: "GET" },
