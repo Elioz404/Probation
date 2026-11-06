@@ -11,7 +11,8 @@ const FAILURE_RESPONSE: Readonly<
     statusCode: 404,
   },
   rate_limited: {
-    message: "GitHub's rate limit was reached. Try again in a minute.",
+    message:
+      "GitHub's rate limit was reached. Add a GitHub token in Settings, or try again later.",
     statusCode: 429,
   },
   unauthorized: {

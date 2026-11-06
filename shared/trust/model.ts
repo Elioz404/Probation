@@ -32,7 +32,7 @@ export const TRIAGE_ACTIONS = [...DISPOSITIONS, "apply-labels"] as const;
 export type TriageAction = (typeof TRIAGE_ACTIONS)[number];
 export const triageActionSchema = z.enum(TRIAGE_ACTIONS);
 
-/** Columns of the trust map: what was knowable the moment an issue opened. */
+/** Columns of the trust map: who reported the issue and how much they wrote. */
 export const ISSUE_CONTEXTS = [
   "newcomer-thin",
   "newcomer-detailed",

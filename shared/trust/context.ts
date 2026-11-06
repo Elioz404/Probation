@@ -19,8 +19,9 @@ export interface IssueContextInput {
 }
 
 /**
- * Buckets an issue using only what existed when it opened, so the same rule
- * applies to an exam question from years ago and to an issue opened today.
+ * Buckets an issue from the reporter's current association and the issue text,
+ * so the same rule applies to an exam question and to an issue opened today.
+ * GitHub reports the association as it stands now, not as it was at opening.
  */
 export function classifyIssueContext({
   authorAssociation,

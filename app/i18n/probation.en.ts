@@ -18,17 +18,17 @@ export default {
   },
   home: {
     headline: "You would not hand a new hire the company card on day one.",
-    lede: "Give your agent a real job on a repository. It sits an exam on what your maintainers actually did, asks you for autonomy with evidence, and loses it the moment you overrule it.",
+    lede: "Give your agent a real job on a repository. It sits an exam on how people on the project closed real issues, asks you for autonomy with evidence, and loses a level each time you overrule it.",
     examRepo: "Repository to examine on",
     workRepo: "Repository to work on (optional)",
     workRepoHint:
-      "The exam only reads public history. The agent can act only on this repository, and only once you allow it.",
+      "The exam only reads. The agent can act only on this repository, and only where you allow it.",
     start: "Start probation",
     failed: "Could not start the probation.",
     noExam: "No exam yet",
   },
   exam: {
-    none: "No exam yet. It is built from this repository's closed issues.",
+    none: "No exam yet. It is built from recent issues closed by someone other than a bot or their reporter.",
     import: "Build the exam",
     importing: "Reading history…",
     importFailed: "Could not build the exam.",
@@ -67,13 +67,13 @@ export default {
     wrongAlonePer100: "Wrong, with nobody watching",
     askedPer100: "Would ask you",
     watchedPer100: "Only suggested",
-    basis: "From {{count}} graded answers.",
+    basis: "Estimate from {{count}} graded answers on recent issues.",
     bars: "Bar to earn Solo",
     save: "Adopt these bars",
     reset: "Reset",
     saveFailed: "Could not save the bars.",
     baseline:
-      "An agent that accepts everything would be right {{share}} of the time here, and would never turn anything away. Accuracy alone is not trust.",
+      "An agent that accepts everything would be right about {{share}} of the time here, and would never turn anything away. Accuracy alone is not trust.",
   },
   promotion: {
     title: "Promotion requests",

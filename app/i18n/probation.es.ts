@@ -19,17 +19,17 @@ export default {
   home: {
     headline:
       "No le darías la tarjeta de la empresa a un empleado en su primer día.",
-    lede: "Dale a tu agente un trabajo real en un repositorio. Rinde examen sobre lo que tus maintainers hicieron de verdad, te pide autonomía con evidencia y la pierde en cuanto lo corriges.",
+    lede: "Dale a tu agente un trabajo real en un repositorio. Rinde examen sobre cómo las personas del proyecto cerraron issues reales, te pide autonomía con evidencia y pierde un nivel cada vez que lo corriges.",
     examRepo: "Repositorio para el examen",
     workRepo: "Repositorio de trabajo (opcional)",
     workRepoHint:
-      "El examen solo lee historial público. El agente solo puede actuar en este repositorio, y solo cuando tú lo permitas.",
+      "El examen solo lee. El agente solo puede actuar en este repositorio, y solo donde tú lo permitas.",
     start: "Iniciar periodo de prueba",
     failed: "No se pudo iniciar el periodo de prueba.",
     noExam: "Sin examen",
   },
   exam: {
-    none: "Todavía no hay examen. Se construye con los issues cerrados de este repositorio.",
+    none: "Todavía no hay examen. Se construye con issues recientes cerrados por alguien que no sea un bot ni quien los reportó.",
     import: "Construir el examen",
     importing: "Leyendo el historial…",
     importFailed: "No se pudo construir el examen.",
@@ -68,13 +68,14 @@ export default {
     wrongAlonePer100: "Errores sin nadie mirando",
     askedPer100: "Te preguntaría",
     watchedPer100: "Solo sugeridos",
-    basis: "Con {{count}} respuestas calificadas.",
+    basis:
+      "Estimación con {{count}} respuestas calificadas sobre issues recientes.",
     bars: "Umbral para ganar Solo",
     save: "Adoptar estos umbrales",
     reset: "Restablecer",
     saveFailed: "No se pudieron guardar los umbrales.",
     baseline:
-      "Un agente que acepte todo acertaría aquí el {{share}} de las veces, y nunca rechazaría nada. La precisión por sí sola no es confianza.",
+      "Un agente que acepte todo acertaría aquí cerca del {{share}} de las veces, y nunca rechazaría nada. La precisión por sí sola no es confianza.",
   },
   promotion: {
     title: "Solicitudes de ascenso",

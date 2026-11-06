@@ -1,6 +1,6 @@
 import type { Disposition } from "./model";
 
-/** What the maintainers actually did, read from the closed issue. */
+/** How the issue was really closed: outcome and labels as GitHub reports them. */
 export interface GroundTruth {
   disposition: Disposition;
   labels: readonly string[];
@@ -17,7 +17,7 @@ export interface ExamGrade {
   labelsCorrect: boolean | null;
 }
 
-/** At least half of the proposed labels must match what maintainers applied. */
+/** At least half of the proposed labels must match the labels on the issue. */
 const LABEL_MIN_PRECISION = 0.5;
 
 const normalizeLabel = (label: string) => label.trim().toLowerCase();

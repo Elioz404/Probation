@@ -7,16 +7,16 @@ description: >-
 
 # Sit an exam
 
-The exam measures your judgement on real history. The answer key is what the
-maintainers did, and code grades you, so there is nothing to gain by guessing
-what the grader wants.
+The exam measures your judgement on real history. The answer key is how a person
+other than the reporter closed each issue, and code grades you, so there is
+nothing to gain by guessing what the grader wants.
 
 ## Steps
 
 1. If `get-probation` reports `examTotal: 0`, call `import-exam`.
 2. Call `get-exam-questions` for a batch.
 3. Decide each question from its title and body alone:
-   - `accept`: real work the maintainers would take on.
+   - `accept`: real work the project would take on.
    - `close-duplicate`: this has clearly been reported before.
    - `close-not-planned`: out of scope, not reproducible as described, or a
      support request.
