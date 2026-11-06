@@ -40,8 +40,12 @@ export default defineAction({
     const isPerson = ctx?.caller === "frontend";
     if (work.level === "observe" && !isPerson) {
       fail(
-        "This cell is on Observe, so the proposal stays a suggestion until a person acts on it or the agent earns more.",
-        { errorCode: "observe_only", statusCode: 403 },
+        `The ${work.weakestCell.action} cell for ${work.weakestCell.context} is on Observe, and a proposal is limited by the lowest cell it touches. It stays a suggestion until a person acts on it or the agent earns more.`,
+        {
+          errorCode: "observe_only",
+          statusCode: 403,
+          details: { blockingCell: work.weakestCell },
+        },
       );
     }
     const actor = !isPerson && work.level === "solo" ? "agent" : "human";

@@ -73,19 +73,21 @@ function cellsOfProposal(
   return cells;
 }
 
-async function levelOfProposal(
+/** The cell holding a proposal back: the lowest level among those it touches. */
+async function weakestCellOfProposal(
   probationId: string,
   context: string,
   disposition: Disposition,
   labels: readonly string[],
-): Promise<TrustLevel> {
-  const levels = await Promise.all(
-    cellsOfProposal(context, disposition, labels).map((key) =>
-      grantedLevelOf(probationId, key),
-    ),
+): Promise<{ key: CellKey; level: TrustLevel }> {
+  const cells = await Promise.all(
+    cellsOfProposal(context, disposition, labels).map(async (key) => ({
+      key,
+      level: await grantedLevelOf(probationId, key),
+    })),
   );
-  return levels.reduce((lowest, level) =>
-    levelRank(level) < levelRank(lowest) ? level : lowest,
+  return cells.reduce((lowest, cell) =>
+    levelRank(cell.level) < levelRank(lowest.level) ? cell : lowest,
   );
 }
 
@@ -106,12 +108,14 @@ async function viewOf(item: WorkItemRow): Promise<WorkItemView> {
     proposedConfidence: item.proposedConfidence,
     proposedRationale: item.proposedRationale,
     currentLevel: proposedDisposition
-      ? await levelOfProposal(
-          item.probationId,
-          item.context,
-          proposedDisposition,
-          proposedLabels,
-        )
+      ? (
+          await weakestCellOfProposal(
+            item.probationId,
+            item.context,
+            proposedDisposition,
+            proposedLabels,
+          )
+        ).level
       : null,
     executedAtLevel: item.executedAtLevel
       ? trustLevelSchema.parse(item.executedAtLevel)
@@ -266,6 +270,8 @@ export interface ProposedWork {
   disposition: Disposition;
   labels: string[];
   level: TrustLevel;
+  /** The cell that sets `level`, for explaining a refusal. */
+  weakestCell: CellKey;
 }
 
 export async function loadProposedWork(

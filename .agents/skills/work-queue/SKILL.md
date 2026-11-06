@@ -15,9 +15,12 @@ description: >-
 4. Call `execute-triage`. The trust map answers, not you:
    - **Solo** runs. Report what you did.
    - **Ask** pauses for a person to approve this exact call.
-   - **Observe** is refused with `observe_only`. That is the system working: leave
-     the suggestion in the queue and move on. Never retry it or look for a way
-     around it.
+   - **Observe** is refused with `observe_only`, naming the cell that blocked it.
+     A proposal is limited by the lowest cell it touches, so labels can hold back
+     a call whose disposition cell is higher. That is the system working: leave
+     the suggestion in the queue and move on, and report the cell it names. Do not
+     retry the same proposal. If a person asks, you may propose it again without
+     labels.
 
 When a person overrules you, accept it. The cell has already dropped a level, and
 the case now counts against you in the exam. Do not argue for it back until the
