@@ -9,10 +9,12 @@ import {
 } from "../server/services/probations.js";
 import { executeTriage, loadProposedWork } from "../server/services/work.js";
 import { probationIdSchema, workItemSchema } from "../shared/contracts.js";
+import { requiresApproval } from "../shared/trust/gate.js";
 
 export default defineAction({
   description:
     "Carry out a recorded proposal on GitHub, subject to the trust map: Solo runs, Ask waits for a person to approve this exact call, Observe is refused for agents.",
+  mcpTool: true,
   schema: z.object({
     probationId: probationIdSchema,
     workItemId: z.string().min(1).max(64),
@@ -24,13 +26,13 @@ export default defineAction({
     openWorldHint: true,
   },
   /**
-   * The same gate holds for the in-app agent, MCP, A2A, HTTP and the CLI, because
-   * they all dispatch this one action. A throw here fails closed.
+   * Every surface dispatches this one action, so they all meet this gate.
+   * A throw here fails closed.
    */
-  needsApproval: async ({ probationId, workItemId }) => {
+  needsApproval: async ({ probationId, workItemId }, ctx) => {
     const probation = await loadReadableProbation(probationId);
     const { level } = await loadProposedWork(probation.id, workItemId);
-    return level === "ask";
+    return requiresApproval(level, ctx?.caller);
   },
   run: async ({ probationId, workItemId }, ctx) => {
     const probation = await loadProbation(probationId, "editor");
