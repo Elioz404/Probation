@@ -6,6 +6,12 @@ Probation is an agent that earns its autonomy. Point it at a GitHub repository a
 
 The agent argues for promotion. You sign. Each time you overrule it, the cell drops a level.
 
+## Demo
+
+[Watch the 3-minute demo on Clips](https://clips.agent-native.com/share/G7oQO1FQa6Qi). It is a screen recording of the deployed app, with real runs on `vercel/next.js` and a private test repository. A script drove the clicks through the real interface, agent waits are sped up and edited, and the account email is masked.
+
+Try it at [probation-one.vercel.app](https://probation-one.vercel.app).
+
 ## How it works
 
 1. **The exam.** Recent closed issues are sampled per outcome (completed, duplicate, not planned). Only project decisions count: an issue closed by a person other than its reporter. Bot closures and people closing their own issues are skipped, since they say nothing about how the project triages. The agent sees the issue's title and body, without labels, comments or outcome.
