@@ -291,16 +291,18 @@ export async function loadProposedWork(
   }
   const disposition = dispositionSchema.parse(item.proposedDisposition);
   const labels = parseStringList(item.proposedLabels);
+  const weakest = await weakestCellOfProposal(
+    probationId,
+    item.context,
+    disposition,
+    labels,
+  );
   return {
     item,
     disposition,
     labels,
-    level: await levelOfProposal(
-      probationId,
-      item.context,
-      disposition,
-      labels,
-    ),
+    level: weakest.level,
+    weakestCell: weakest.key,
   };
 }
 
