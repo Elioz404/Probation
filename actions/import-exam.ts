@@ -7,7 +7,7 @@ import { importExam } from "../server/services/exam.js";
 import { loadProbation } from "../server/services/probations.js";
 import { probationIdSchema } from "../shared/contracts.js";
 
-const DEFAULT_QUESTIONS_PER_OUTCOME = 25;
+const DEFAULT_QUESTIONS_PER_OUTCOME = 20;
 const MAX_QUESTIONS_PER_OUTCOME = 100;
 
 export default defineAction({

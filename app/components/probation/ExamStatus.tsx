@@ -81,7 +81,7 @@ export function ExamStatus({ probation }: { probation: ProbationDetail }) {
           size="sm"
           onClick={() =>
             sendAgent(
-              "Sit the exam for this probation until no questions remain, then file the promotion requests your evidence supports.",
+              "Sit the exam for this probation until no questions remain, then stop and tell me you are done.",
             )
           }
         >
@@ -95,7 +95,7 @@ export function ExamStatus({ probation }: { probation: ProbationDetail }) {
           variant="outline"
           onClick={() =>
             sendAgent(
-              "The exam is over. Review your results and file the promotion requests your evidence supports.",
+              "The exam is over. Read the trust map and file a promotion request for every cell whose earned level is above its granted level.",
             )
           }
         >
