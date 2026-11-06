@@ -3,7 +3,11 @@ import { z } from "zod";
 
 import { loadProbation } from "../server/services/probations.js";
 import { proposeTriage } from "../server/services/work.js";
-import { probationIdSchema, workItemSchema } from "../shared/contracts.js";
+import {
+  probationIdSchema,
+  workItemSchema,
+  workItemIdSchema,
+} from "../shared/contracts.js";
 import { dispositionSchema } from "../shared/trust/model.js";
 
 export default defineAction({
@@ -12,7 +16,7 @@ export default defineAction({
   mcpTool: true,
   schema: z.object({
     probationId: probationIdSchema,
-    workItemId: z.string().min(1).max(64),
+    workItemId: workItemIdSchema,
     disposition: dispositionSchema.describe(
       '"accept", "close-duplicate" or "close-not-planned".',
     ),

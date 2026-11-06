@@ -17,6 +17,14 @@ export const probationIdSchema = z
   .max(64)
   .describe("Probation id, from list-probations or the current screen.");
 
+export const workItemIdSchema = z
+  .string()
+  .min(1)
+  .max(64)
+  .describe(
+    "The item's id from list-work-items. This is not the GitHub issue number.",
+  );
+
 export const probationSummarySchema = z.object({
   id: z.string(),
   title: z.string(),

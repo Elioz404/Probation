@@ -8,7 +8,11 @@ import {
   loadReadableProbation,
 } from "../server/services/probations.js";
 import { executeTriage, loadProposedWork } from "../server/services/work.js";
-import { probationIdSchema, workItemSchema } from "../shared/contracts.js";
+import {
+  probationIdSchema,
+  workItemSchema,
+  workItemIdSchema,
+} from "../shared/contracts.js";
 import { requiresApproval } from "../shared/trust/gate.js";
 
 export default defineAction({
@@ -17,7 +21,7 @@ export default defineAction({
   mcpTool: true,
   schema: z.object({
     probationId: probationIdSchema,
-    workItemId: z.string().min(1).max(64),
+    workItemId: workItemIdSchema,
   }),
   outputSchema: z.object({ item: workItemSchema }),
   mcpAnnotations: {

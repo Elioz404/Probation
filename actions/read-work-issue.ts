@@ -3,7 +3,7 @@ import { z } from "zod";
 
 import { loadReadableProbation } from "../server/services/probations.js";
 import { readWorkItemIssue } from "../server/services/work.js";
-import { probationIdSchema } from "../shared/contracts.js";
+import { probationIdSchema, workItemIdSchema } from "../shared/contracts.js";
 import { issueContextSchema } from "../shared/trust/model.js";
 
 export default defineAction({
@@ -12,7 +12,7 @@ export default defineAction({
   mcpTool: true,
   schema: z.object({
     probationId: probationIdSchema,
-    workItemId: z.string().min(1).max(64),
+    workItemId: workItemIdSchema,
   }),
   outputSchema: z.object({
     id: z.string(),
