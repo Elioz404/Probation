@@ -1,0 +1,15 @@
+.env
+.env.*
+!.env.example
+data
+learnings.md
+.agent-native
+.claude
+.generated
+.netlify
+.react-router
+.tmp
+.vercel
+build
+dist
+node_modules
